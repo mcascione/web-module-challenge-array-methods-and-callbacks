@@ -73,7 +73,7 @@ Use the higher-order function getWinners to do the following:
 
 function getWinners(array, getFinalsCB) {
     const winners = [];
-    getFinalsCB(array).filter((worldCup)=>{
+    getFinalsCB(array).map((worldCup)=>{
         if (worldCup["Home Team Goals"] > worldCup["Away Team Goals"]){
             winners.push(worldCup["Home Team Name"]);
         } else if (worldCup["Away Team Goals"] > worldCup["Home Team Goals"]){
