@@ -171,10 +171,56 @@ function getCountryWins(data, teamInitials) {
 Write a function called getGoals() that accepts a parameter `data` and returns the team with the most goals score per appearance (average goals for) in the World Cup finals */
 
 function getGoals(data) {
+const finalsEvents = getFinals(data);
 
+const teamFinalsData = finalsEvents.reduce((acc, curr)=> {
+    const homeTeam = curr['Home Team Name'];
+    const homeTeamGoals = curr['Home Team Goals'];
+
+    const awayTeam = curr['Away Team Name'];
+    const awayTeamGoals = curr['Away Team Goals'];
+
+    if (acc[homeTeam]){
+        acc[homeTeam].slotted += 1;
+        acc[homeTeam].goals += homeTeamGoals;   
+    } else {
+        acc[homeTeam] = {
+            slotted: 1,
+            goals: homeTeamGoals
+        };
+    }
+
+    if (acc[awayTeam]){
+        acc[awayTeam].slotted += 1;
+        acc[awayTeam].goals += awayTeamGoals;
+    } else {
+        acc[awayTeam] = {
+            slotted: 1, 
+            goals: awayTeamGoals
+        };
+    }
+
+    return acc;
+}, {});
+
+const averageGoalsByTeamSorted = Object.entries(teamFinalsData)
+    .map(([country, stats]) => {
+        const averageGoals = stats.goals / stats.slotted;
+        return {
+            country,
+            averageGoals
+        };
+    }) 
+    .sort((a, b) => b.averageGoals - a.averageGoals);
+
+const mostAverageGoals = averageGoalsByTeamSorted[0].averageGoals; 
+
+return averageGoalsByTeamSorted
+    .filter((team) => team.averageGoals === mostAverageGoals)
+    .map((team) => team.country);
 }
 
-getGoals(fifaData);
+console.log(getGoals(fifaData));
 
 
 /* 💪💪💪💪💪 Stretch 3: 💪💪💪💪💪
